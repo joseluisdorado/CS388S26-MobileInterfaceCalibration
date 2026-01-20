@@ -5,15 +5,9 @@ using UnityEngine;
 public class CalibratedAccel : MonoBehaviour
 {
     Vector3 accelOffset;
-    Vector3 calibratedAccel;
-
     bool calibrated = false;
+
     // Start is called before the first frame update
-    void Awake()
-    {
-
-    }
-
     void Start()
     {
      
@@ -32,7 +26,7 @@ public class CalibratedAccel : MonoBehaviour
         if (calibrated)
         {
             //Calibration
-            calibratedAccel = Input.acceleration - accelOffset;
+            Vector3 calibratedAccel = Input.acceleration - accelOffset;
 
             //Registration 
             Vector3 unityCalibratedAccel = new Vector3(calibratedAccel.x, calibratedAccel.z, calibratedAccel.y);
@@ -44,6 +38,7 @@ public class CalibratedAccel : MonoBehaviour
     }
     void Calibrate()
     {
+        //We ensure that we are receiving data from the sensor before calibrate
         if (!calibrated && Input.acceleration.magnitude > 0)
         {
             accelOffset = Input.acceleration;

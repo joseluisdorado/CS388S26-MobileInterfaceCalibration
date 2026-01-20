@@ -5,8 +5,6 @@ using UnityEngine;
 public class CalibratedGyro : MonoBehaviour
 {
     Quaternion gyroOffset;
-    Quaternion calibratedGyro;
-
     bool calibrated = false;
 
     // Start is called before the first frame update
@@ -23,21 +21,21 @@ public class CalibratedGyro : MonoBehaviour
         if (calibrated)
         {
             //Calibration
-            calibratedGyro = Quaternion.Inverse(gyroOffset) * Input.gyro.attitude;
+            Quaternion calibratedGyro = Quaternion.Inverse(gyroOffset) * Input.gyro.attitude;
 
             //Registration
             Quaternion unityCalibratedGyro = new Quaternion(calibratedGyro.x, calibratedGyro.y, -calibratedGyro.z, -calibratedGyro.w);
 
             //Interaction
-            this.transform.rotation = Quaternion.Slerp(this.transform.rotation, Input.gyro.attitude, Time.deltaTime * 4);
+            this.transform.rotation = Quaternion.Slerp(this.transform.rotation, unityCalibratedGyro, Time.deltaTime * 4);
         }
     }
 
     void Calibrate()
     {
+        //We sensure that we are receiving data from the sensor before calibrate
         if (!calibrated && (Input.gyro.attitude.x != 0 || Input.gyro.attitude.y != 0 || Input.gyro.attitude.z != 0))
         {
-            Debug.Log("Calibrated:" + Input.gyro.attitude);
             gyroOffset = Input.gyro.attitude;
             calibrated = true;
         }
